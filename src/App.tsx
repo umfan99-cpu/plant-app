@@ -7,6 +7,7 @@ import SplashScreen from "./pages/SplashScreen";
 import Home from "./pages/Home";
 import PlantDetail from "./pages/PlantDetail";
 import AddPlant from "./pages/AddPlant";
+import EditPlant from "./pages/EditPlant";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
 
@@ -22,7 +23,7 @@ const App = () => (
           <Route path="/" element={<SplashScreen />} />
           <Route path="/home" element={<><Home /><BottomNav /></>} />
           <Route path="/plant/:id" element={<><PlantDetail /><BottomNav /></>} />
-          <Route path="/plant/:id/edit" element={<><AddPlant /><BottomNav /></>} />
+          <Route path="/plant/:id/edit" element={<><EditPlant /><BottomNav /></>} />
           <Route path="/add-plant" element={<><AddPlant /><BottomNav /></>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

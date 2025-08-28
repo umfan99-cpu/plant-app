@@ -1,8 +1,11 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, Archive, Trash2, Camera, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import PhotoModal from '@/components/PhotoModal';
 
 import monsteraImg from '@/assets/plants/monstera.jpg';
 import snakePlantImg from '@/assets/plants/snake-plant.jpg';
@@ -84,6 +87,8 @@ const mockPlantData = {
 const PlantDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   
   const plant = mockPlantData[parseInt(id || '1') as keyof typeof mockPlantData] || {
     id: parseInt(id || '1'),
@@ -97,8 +102,21 @@ const PlantDetail = () => {
     thumbnailIndex: 0
   };
 
+  const openPhotoModal = (index: number) => {
+    setCurrentPhotoIndex(index);
+    setIsPhotoModalOpen(true);
+  };
+
+  const handlePreviousPhoto = () => {
+    setCurrentPhotoIndex(prev => prev === 0 ? plant.photos.length - 1 : prev - 1);
+  };
+
+  const handleNextPhoto = () => {
+    setCurrentPhotoIndex(prev => prev === plant.photos.length - 1 ? 0 : prev + 1);
+  };
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <header className="bg-card/80 backdrop-blur-md border-b border-border/20 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-3">
@@ -114,20 +132,23 @@ const PlantDetail = () => {
             <h1 className="text-lg font-medium text-foreground flex-1 truncate">{plant.name}</h1>
             <Button
               onClick={() => navigate(`/plant/${id}/edit`)}
-              className="bg-gradient-primary hover:bg-primary-hover text-primary-foreground rounded-full h-9 px-4"
+              className="bg-gradient-primary hover:bg-primary-hover text-primary-foreground rounded-full h-8 px-3"
               size="sm"
             >
-              <Edit className="w-4 h-4 mr-1.5" />
+              <Edit className="w-4 h-4 mr-1" />
               Edit
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-4 max-w-4xl">
+      <main className="container mx-auto px-4 py-3 max-w-4xl">
         {/* Main Photo */}
-        <div className="mb-4">
-          <div className="aspect-[4/3] bg-muted rounded-2xl overflow-hidden shadow-soft">
+        <div className="mb-3">
+          <div 
+            className="aspect-[5/4] bg-muted rounded-2xl overflow-hidden shadow-soft cursor-pointer"
+            onClick={() => openPhotoModal(plant.thumbnailIndex)}
+          >
             <img
               src={plant.photos[plant.thumbnailIndex]}
               alt={plant.name}
@@ -141,94 +162,103 @@ const PlantDetail = () => {
         </div>
 
         {/* Plant Information */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+        <div className="grid grid-cols-2 gap-2 mb-3">
           {/* Basic Info */}
-          <Card className="shadow-soft border-border/20 rounded-2xl">
-            <CardHeader className="pb-2 px-3 pt-3">
-              <CardTitle className="text-sm text-card-foreground font-medium">Plant Info</CardTitle>
+          <Card className="shadow-soft border-border/20 rounded-xl">
+            <CardHeader className="pb-1 px-2 pt-2">
+              <CardTitle className="text-xs text-card-foreground font-medium">Plant Info</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 pt-0 px-3 pb-3">
+            <CardContent className="space-y-1.5 pt-0 px-2 pb-2">
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Name</label>
-                <p className="text-card-foreground text-sm mt-0.5 leading-tight">{plant.name}</p>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Name</label>
+                <p className="text-card-foreground text-xs mt-0.5 leading-tight">{plant.name}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Scientific</label>
-                <p className="text-card-foreground italic text-sm mt-0.5 leading-tight">{plant.scientificName}</p>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Scientific</label>
+                <p className="text-card-foreground italic text-xs mt-0.5 leading-tight">{plant.scientificName}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Price</label>
-                <p className="text-card-foreground text-sm mt-0.5 font-medium">{plant.price}</p>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Price</label>
+                <p className="text-card-foreground text-xs mt-0.5 font-medium">{plant.price}</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Purchase Info */}
-          <Card className="shadow-soft border-border/20 rounded-2xl">
-            <CardHeader className="pb-2 px-3 pt-3">
-              <CardTitle className="text-sm text-card-foreground font-medium">Purchase</CardTitle>
+          <Card className="shadow-soft border-border/20 rounded-xl">
+            <CardHeader className="pb-1 px-2 pt-2">
+              <CardTitle className="text-xs text-card-foreground font-medium">Purchase</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 pt-0 px-3 pb-3">
+            <CardContent className="space-y-1.5 pt-0 px-2 pb-2">
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Store</label>
-                <p className="text-card-foreground text-sm mt-0.5 leading-tight">{plant.whereBought}</p>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Store</label>
+                <p className="text-card-foreground text-xs mt-0.5 leading-tight">{plant.whereBought}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Date</label>
-                <p className="text-card-foreground text-sm mt-0.5">{new Date(plant.dateAcquired).toLocaleDateString()}</p>
+                <label className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">Date</label>
+                <p className="text-card-foreground text-xs mt-0.5">{new Date(plant.dateAcquired).toLocaleDateString()}</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Notes */}
-        <Card className="shadow-soft border-border/20 mb-4 rounded-2xl">
-          <CardHeader className="pb-2 px-3 pt-3">
-            <CardTitle className="text-sm text-card-foreground font-medium">Notes</CardTitle>
+        <Card className="shadow-soft border-border/20 mb-3 rounded-xl">
+          <CardHeader className="pb-1 px-2 pt-2">
+            <CardTitle className="text-xs text-card-foreground font-medium">Notes</CardTitle>
           </CardHeader>
-          <CardContent className="pt-0 px-3 pb-3">
-            <p className="text-card-foreground leading-relaxed text-sm">{plant.notes}</p>
+          <CardContent className="pt-0 px-2 pb-2">
+            <p className="text-card-foreground leading-relaxed text-xs">{plant.notes}</p>
           </CardContent>
         </Card>
 
         {/* Photo Gallery */}
-        <Card className="shadow-soft border-border/20 rounded-2xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-2 px-3 pt-3">
-            <CardTitle className="text-sm text-card-foreground font-medium">Photos</CardTitle>
-            <Badge variant="secondary" className="bg-secondary/50 text-xs rounded-full px-2 py-0.5">
+        <Card className="shadow-soft border-border/20 rounded-xl">
+          <CardHeader className="flex flex-row items-center justify-between pb-1 px-2 pt-2">
+            <CardTitle className="text-xs text-card-foreground font-medium">Photos</CardTitle>
+            <Badge variant="secondary" className="bg-secondary/50 text-[10px] rounded-full px-1.5 py-0.5">
               {plant.photos.length}
             </Badge>
           </CardHeader>
-          <CardContent className="pt-0 px-3 pb-3">
-            <div className="grid grid-cols-3 gap-2">
-              {plant.photos.map((photo, index) => (
-                <div
-                  key={index}
-                  className={`aspect-square bg-muted rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${
-                    index === plant.thumbnailIndex
-                      ? 'border-primary shadow-soft scale-[1.02]'
-                      : 'border-transparent hover:border-border/50 hover:scale-[1.02]'
-                  }`}
-                  onClick={() => {
-                    // In real app, this would update the thumbnail index
-                    console.log('Set as thumbnail:', index);
-                  }}
-                >
-                  <img
-                    src={photo}
-                    alt={`${plant.name} photo ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = '/placeholder.svg';
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
+          <CardContent className="pt-0 px-2 pb-2">
+            <ScrollArea className="w-full">
+              <div className="grid grid-cols-3 gap-1.5 max-h-48 overflow-y-auto">
+                {plant.photos.map((photo, index) => (
+                  <div
+                    key={index}
+                    className={`aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                      index === plant.thumbnailIndex
+                        ? 'border-primary shadow-soft scale-[1.02]'
+                        : 'border-transparent hover:border-border/50 hover:scale-[1.02]'
+                    }`}
+                    onClick={() => openPhotoModal(index)}
+                  >
+                    <img
+                      src={photo}
+                      alt={`${plant.name} photo ${index + 1}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder.svg';
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
           </CardContent>
         </Card>
       </main>
+
+      <PhotoModal
+        isOpen={isPhotoModalOpen}
+        onClose={() => setIsPhotoModalOpen(false)}
+        photos={plant.photos}
+        currentIndex={currentPhotoIndex}
+        onPrevious={handlePreviousPhoto}
+        onNext={handleNextPhoto}
+        plantName={plant.name}
+      />
     </div>
   );
 };
