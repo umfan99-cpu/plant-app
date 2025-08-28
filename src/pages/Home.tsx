@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import PlantThumbnail from '@/components/PlantThumbnail';
 
@@ -25,20 +24,12 @@ const Home = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <header className="bg-card border-b border-border/50 shadow-soft sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-4">
             <h1 className="text-2xl font-bold text-foreground">My Plant Collection</h1>
-            <Button 
-              onClick={() => navigate('/add-plant')}
-              className="bg-gradient-primary hover:bg-primary-hover text-primary-foreground shadow-medium transition-all duration-300 hover:scale-105"
-              size="sm"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Plant
-            </Button>
           </div>
           
           {/* Search Bar */}
@@ -65,15 +56,6 @@ const Home = () => {
             <p className="text-muted-foreground mb-6">
               {searchQuery ? 'Try a different search term' : 'Start building your plant collection!'}
             </p>
-            {!searchQuery && (
-              <Button 
-                onClick={() => navigate('/add-plant')}
-                className="bg-gradient-primary hover:bg-primary-hover text-primary-foreground shadow-medium"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Plant
-              </Button>
-            )}
           </div>
         ) : (
           <>

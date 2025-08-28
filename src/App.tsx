@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import PlantDetail from "./pages/PlantDetail";
 import AddPlant from "./pages/AddPlant";
 import NotFound from "./pages/NotFound";
+import BottomNav from "./components/BottomNav";
 
 const queryClient = new QueryClient();
 
@@ -19,9 +20,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<SplashScreen />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/plant/:id" element={<PlantDetail />} />
-          <Route path="/add-plant" element={<AddPlant />} />
+          <Route path="/home" element={<><Home /><BottomNav /></>} />
+          <Route path="/plant/:id" element={<><PlantDetail /><BottomNav /></>} />
+          <Route path="/add-plant" element={<><AddPlant /><BottomNav /></>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
