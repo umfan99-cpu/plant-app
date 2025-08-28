@@ -19,9 +19,22 @@ const Home = () => {
   const [plants, setPlants] = useState(PlantDataService.getAllPlants());
 
   useEffect(() => {
-    // Update plants when component mounts to get latest data
+    // Update plants when component mounts or when returning from other pages
     const updatedPlants = PlantDataService.getAllPlants();
     setPlants(updatedPlants);
+  }, []);
+
+  // Add visibility change listener to refresh data when returning to page
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        const updatedPlants = PlantDataService.getAllPlants();
+        setPlants(updatedPlants);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
   const filteredAndSortedPlants = plants
@@ -40,10 +53,16 @@ const Home = () => {
       if (sortBy === 'name') {
         return a.name.localeCompare(b.name);
       } else {
-        // Ensure proper date parsing for sorting
+        // Sort by dateAcquired - most recent first
         const dateA = new Date(a.dateAdded);
         const dateB = new Date(b.dateAdded);
-        return dateB.getTime() - dateA.getTime(); // Most recent first
+        
+        // Debug logging
+        console.log(`Sorting: ${a.name} (${a.dateAdded}) vs ${b.name} (${b.dateAdded})`);
+        console.log(`Date objects: ${dateA} vs ${dateB}`);
+        console.log(`Result: ${dateB.getTime() - dateA.getTime()}`);
+        
+        return dateB.getTime() - dateA.getTime();
       }
     });
 
