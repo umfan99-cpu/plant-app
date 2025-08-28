@@ -24,10 +24,7 @@ const BottomNav = () => {
       icon: User,
       label: 'Profile',
       path: '/profile',
-      onClick: () => {
-        // TODO: Navigate to profile page when implemented
-        console.log('Profile clicked - not yet implemented');
-      }
+      onClick: () => navigate('/profile')
     }
   ];
 
