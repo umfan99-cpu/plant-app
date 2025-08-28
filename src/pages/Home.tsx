@@ -1,32 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ArrowUpDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import PlantThumbnail from '@/components/PlantThumbnail';
-import monsteraImg from '@/assets/plants/monstera.jpg';
-import snakePlantImg from '@/assets/plants/snake-plant.jpg';
-import pothosImg from '@/assets/plants/pothos.jpg';
-import fiddleLeafImg from '@/assets/plants/fiddle-leaf.jpg';
-import peaceLilyImg from '@/assets/plants/peace-lily.jpg';
-import rubberPlantImg from '@/assets/plants/rubber-plant.jpg';
-
-// Mock data for demonstration
-const mockPlants = [
-  { id: 1, name: 'Monstera Deliciosa', image: monsteraImg, scientificName: 'Monstera deliciosa', dateAdded: '2024-01-15' },
-  { id: 2, name: 'Snake Plant', image: snakePlantImg, scientificName: 'Sansevieria trifasciata', dateAdded: '2024-02-10' },
-  { id: 3, name: 'Pothos', image: pothosImg, scientificName: 'Epipremnum aureum', dateAdded: '2024-01-28' },
-  { id: 4, name: 'Fiddle Leaf Fig', image: fiddleLeafImg, scientificName: 'Ficus lyrata', dateAdded: '2024-03-05' },
-  { id: 5, name: 'Peace Lily', image: peaceLilyImg, scientificName: 'Spathiphyllum wallisii', dateAdded: '2024-02-22' },
-  { id: 6, name: 'Rubber Plant', image: rubberPlantImg, scientificName: 'Ficus elastica', dateAdded: '2024-01-08' },
-];
+import { PlantDataService } from '@/services/plantData';
 
 const Home = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<'name' | 'date'>('name');
+  const [plants, setPlants] = useState(PlantDataService.getAllPlants());
 
-  const filteredAndSortedPlants = mockPlants
+  useEffect(() => {
+    // Update plants when component mounts to get latest data
+    setPlants(PlantDataService.getAllPlants());
+  }, []);
+
+  const filteredAndSortedPlants = plants
+    .map(plant => ({
+      id: plant.id,
+      name: plant.name,
+      image: plant.photos[plant.thumbnailIndex]?.url || plant.photos[0]?.url,
+      scientificName: plant.scientificName,
+      dateAdded: plant.dateAcquired
+    }))
     .filter(plant =>
       plant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       plant.scientificName.toLowerCase().includes(searchQuery.toLowerCase())

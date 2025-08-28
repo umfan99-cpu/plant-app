@@ -117,11 +117,6 @@ const EditPlant = () => {
       thumbnailIndex
     });
     
-    toast({
-      title: "Plant updated successfully!",
-      description: `${formData.name} has been updated.`,
-    });
-    
     navigate(`/plant/${id}`);
   };
 
