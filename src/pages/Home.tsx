@@ -20,7 +20,8 @@ const Home = () => {
 
   useEffect(() => {
     // Update plants when component mounts to get latest data
-    setPlants(PlantDataService.getAllPlants());
+    const updatedPlants = PlantDataService.getAllPlants();
+    setPlants(updatedPlants);
   }, []);
 
   const filteredAndSortedPlants = plants
@@ -39,7 +40,10 @@ const Home = () => {
       if (sortBy === 'name') {
         return a.name.localeCompare(b.name);
       } else {
-        return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+        // Ensure proper date parsing for sorting
+        const dateA = new Date(a.dateAdded);
+        const dateB = new Date(b.dateAdded);
+        return dateB.getTime() - dateA.getTime(); // Most recent first
       }
     });
 
