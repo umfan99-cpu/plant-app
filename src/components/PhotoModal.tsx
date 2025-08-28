@@ -2,10 +2,15 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 
+interface Photo {
+  url: string;
+  dateTaken: string;
+}
+
 interface PhotoModalProps {
   isOpen: boolean;
   onClose: () => void;
-  photos: string[];
+  photos: Photo[];
   currentIndex: number;
   onPrevious: () => void;
   onNext: () => void;
@@ -50,7 +55,7 @@ const PhotoModal = ({
           {/* Main image */}
           <div className="w-full h-full flex items-center justify-center p-4">
             <img
-              src={photos[currentIndex]}
+              src={photos[currentIndex].url}
               alt={`${plantName} photo ${currentIndex + 1}`}
               className="max-w-full max-h-full object-contain"
               onError={(e) => {
@@ -72,14 +77,24 @@ const PhotoModal = ({
             </Button>
           )}
 
-          {/* Photo counter */}
-          {photos.length > 1 && (
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10">
+          {/* Photo metadata and counter */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+            {/* Photo date */}
+            <div className="bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+              {new Date(photos[currentIndex].dateTaken).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </div>
+            
+            {/* Photo counter */}
+            {photos.length > 1 && (
               <div className="bg-black/50 text-white px-3 py-1 rounded-full text-sm">
                 {currentIndex + 1} / {photos.length}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>

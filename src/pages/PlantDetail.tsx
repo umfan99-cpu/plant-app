@@ -24,7 +24,14 @@ const mockPlantData = {
     whereBought: 'Green Thumb Nursery',
     dateAcquired: '2024-01-15',
     notes: 'Beautiful specimen with fenestrated leaves. Growing well in bright indirect light.',
-    photos: [monsteraImg, monsteraImg, monsteraImg, monsteraImg, monsteraImg, monsteraImg],
+    photos: [
+      { url: monsteraImg, dateTaken: '2024-01-15' },
+      { url: monsteraImg, dateTaken: '2024-02-20' },
+      { url: monsteraImg, dateTaken: '2024-03-10' },
+      { url: monsteraImg, dateTaken: '2024-04-05' },
+      { url: monsteraImg, dateTaken: '2024-05-15' },
+      { url: monsteraImg, dateTaken: '2024-06-22' }
+    ],
     thumbnailIndex: 0
   },
   2: {
@@ -35,7 +42,14 @@ const mockPlantData = {
     whereBought: 'Home Depot',
     dateAcquired: '2024-02-10',
     notes: 'Low maintenance plant perfect for beginners. Tolerates low light conditions.',
-    photos: [snakePlantImg, snakePlantImg, snakePlantImg, snakePlantImg, snakePlantImg, snakePlantImg],
+    photos: [
+      { url: snakePlantImg, dateTaken: '2024-02-10' },
+      { url: snakePlantImg, dateTaken: '2024-03-15' },
+      { url: snakePlantImg, dateTaken: '2024-04-20' },
+      { url: snakePlantImg, dateTaken: '2024-05-25' },
+      { url: snakePlantImg, dateTaken: '2024-06-30' },
+      { url: snakePlantImg, dateTaken: '2024-07-14' }
+    ],
     thumbnailIndex: 0
   },
   3: {
@@ -46,7 +60,14 @@ const mockPlantData = {
     whereBought: 'Local Plant Shop',
     dateAcquired: '2024-01-28',
     notes: 'Fast-growing trailing plant. Great for hanging baskets or shelves.',
-    photos: [pothosImg, pothosImg, pothosImg, pothosImg, pothosImg, pothosImg],
+    photos: [
+      { url: pothosImg, dateTaken: '2024-01-28' },
+      { url: pothosImg, dateTaken: '2024-02-28' },
+      { url: pothosImg, dateTaken: '2024-03-28' },
+      { url: pothosImg, dateTaken: '2024-04-28' },
+      { url: pothosImg, dateTaken: '2024-05-28' },
+      { url: pothosImg, dateTaken: '2024-06-28' }
+    ],
     thumbnailIndex: 0
   },
   4: {
@@ -57,7 +78,14 @@ const mockPlantData = {
     whereBought: 'Botanical Garden Shop',
     dateAcquired: '2024-03-05',
     notes: 'Statement plant with large glossy leaves. Requires bright indirect light.',
-    photos: [fiddleLeafImg, fiddleLeafImg, fiddleLeafImg, fiddleLeafImg, fiddleLeafImg, fiddleLeafImg],
+    photos: [
+      { url: fiddleLeafImg, dateTaken: '2024-03-05' },
+      { url: fiddleLeafImg, dateTaken: '2024-04-05' },
+      { url: fiddleLeafImg, dateTaken: '2024-05-05' },
+      { url: fiddleLeafImg, dateTaken: '2024-06-05' },
+      { url: fiddleLeafImg, dateTaken: '2024-07-05' },
+      { url: fiddleLeafImg, dateTaken: '2024-08-05' }
+    ],
     thumbnailIndex: 0
   },
   5: {
@@ -68,7 +96,14 @@ const mockPlantData = {
     whereBought: 'Green Thumb Nursery',
     dateAcquired: '2024-02-22',
     notes: 'Elegant flowering plant that indicates when it needs water by drooping.',
-    photos: [peaceLilyImg, peaceLilyImg, peaceLilyImg, peaceLilyImg, peaceLilyImg, peaceLilyImg],
+    photos: [
+      { url: peaceLilyImg, dateTaken: '2024-02-22' },
+      { url: peaceLilyImg, dateTaken: '2024-03-22' },
+      { url: peaceLilyImg, dateTaken: '2024-04-22' },
+      { url: peaceLilyImg, dateTaken: '2024-05-22' },
+      { url: peaceLilyImg, dateTaken: '2024-06-22' },
+      { url: peaceLilyImg, dateTaken: '2024-07-22' }
+    ],
     thumbnailIndex: 0
   },
   6: {
@@ -79,7 +114,14 @@ const mockPlantData = {
     whereBought: 'Plant Paradise',
     dateAcquired: '2024-01-08',
     notes: 'Classic houseplant with glossy burgundy leaves. Very resilient and forgiving.',
-    photos: [rubberPlantImg, rubberPlantImg, rubberPlantImg, rubberPlantImg, rubberPlantImg, rubberPlantImg],
+    photos: [
+      { url: rubberPlantImg, dateTaken: '2024-01-08' },
+      { url: rubberPlantImg, dateTaken: '2024-02-08' },
+      { url: rubberPlantImg, dateTaken: '2024-03-08' },
+      { url: rubberPlantImg, dateTaken: '2024-04-08' },
+      { url: rubberPlantImg, dateTaken: '2024-05-08' },
+      { url: rubberPlantImg, dateTaken: '2024-06-08' }
+    ],
     thumbnailIndex: 0
   }
 };
@@ -98,7 +140,7 @@ const PlantDetail = () => {
     whereBought: 'Unknown',
     dateAcquired: '2024-01-01',
     notes: 'No notes available.',
-    photos: ['/placeholder.svg'],
+    photos: [{ url: '/placeholder.svg', dateTaken: '2024-01-01' }],
     thumbnailIndex: 0
   };
 
@@ -150,7 +192,7 @@ const PlantDetail = () => {
             onClick={() => openPhotoModal(plant.thumbnailIndex)}
           >
             <img
-              src={plant.photos[plant.thumbnailIndex]}
+              src={plant.photos[plant.thumbnailIndex].url}
               alt={plant.name}
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -233,7 +275,7 @@ const PlantDetail = () => {
                   onClick={() => openPhotoModal(index)}
                 >
                   <img
-                    src={photo}
+                    src={photo.url}
                     alt={`${plant.name} photo ${index + 1}`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
