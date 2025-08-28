@@ -41,6 +41,26 @@ const AddPlant = () => {
     }
   };
 
+  const handleCameraCapture = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          if (event.target?.result) {
+            setPhotos(prev => [...prev, event.target!.result as string]);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  };
+
   const removePhoto = (index: number) => {
     setPhotos(prev => prev.filter((_, i) => i !== index));
   };
@@ -192,16 +212,30 @@ const AddPlant = () => {
               <CardTitle className="text-lg text-card-foreground">Photos (Optional)</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* Upload Button */}
-              <div className="mb-4">
-                <Label htmlFor="photo-upload" className="cursor-pointer">
-                  <div className="border-2 border-dashed border-border hover:border-primary/50 rounded-xl p-8 text-center transition-colors hover:bg-muted/50">
-                    <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">
-                      Click to upload photos or drag and drop
-                    </p>
-                  </div>
-                </Label>
+              {/* Upload Options */}
+              <div className="mb-4 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleCameraCapture}
+                    className="h-20 border-2 border-dashed border-border hover:border-primary/50 transition-colors hover:bg-muted/50"
+                  >
+                    <div className="text-center">
+                      <Camera className="w-6 h-6 text-muted-foreground mx-auto mb-1" />
+                      <p className="text-xs text-muted-foreground">Take Photo</p>
+                    </div>
+                  </Button>
+                  
+                  <Label htmlFor="photo-upload" className="cursor-pointer">
+                    <div className="h-20 border-2 border-dashed border-border hover:border-primary/50 rounded-lg text-center transition-colors hover:bg-muted/50 flex items-center justify-center">
+                      <div>
+                        <Upload className="w-6 h-6 text-muted-foreground mx-auto mb-1" />
+                        <p className="text-xs text-muted-foreground">Upload</p>
+                      </div>
+                    </div>
+                  </Label>
+                </div>
                 <Input
                   id="photo-upload"
                   type="file"

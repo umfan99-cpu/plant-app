@@ -222,14 +222,14 @@ const PlantDetail = () => {
           </CardHeader>
           <CardContent className="pt-0 px-2 pb-2">
             <ScrollArea className="w-full">
-              <div className="grid grid-cols-3 gap-1.5 max-h-48 overflow-y-auto">
+              <div className="flex gap-1.5 pb-2" style={{ width: 'max-content' }}>
                 {plant.photos.map((photo, index) => (
                   <div
                     key={index}
-                    className={`aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                    className={`w-16 h-16 bg-muted rounded-lg overflow-hidden cursor-pointer border-2 transition-all flex-shrink-0 ${
                       index === plant.thumbnailIndex
-                        ? 'border-primary shadow-soft scale-[1.02]'
-                        : 'border-transparent hover:border-border/50 hover:scale-[1.02]'
+                        ? 'border-primary shadow-soft'
+                        : 'border-transparent hover:border-border/50'
                     }`}
                     onClick={() => openPhotoModal(index)}
                   >
