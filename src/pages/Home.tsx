@@ -98,17 +98,20 @@ const Home = () => {
             </div>
             
             {/* Sort Dropdown */}
-            <Select value={sortBy} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-[140px] h-9 bg-background/60 border-border/30 rounded-full text-sm">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border shadow-lg">
-                <SelectItem value="name-asc">A-Z</SelectItem>
-                <SelectItem value="name-desc">Z-A</SelectItem>
-                <SelectItem value="date-desc">New-Old</SelectItem>
-                <SelectItem value="date-asc">Old-New</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground font-medium">Sort:</span>
+              <Select value={sortBy} onValueChange={handleSortChange}>
+                <SelectTrigger className="w-[100px] h-9 bg-background/60 border-border/30 rounded-full text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-popover border-border shadow-lg">
+                  <SelectItem value="name-asc">A-Z</SelectItem>
+                  <SelectItem value="name-desc">Z-A</SelectItem>
+                  <SelectItem value="date-desc">New-Old</SelectItem>
+                  <SelectItem value="date-asc">Old-New</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
       </header>
