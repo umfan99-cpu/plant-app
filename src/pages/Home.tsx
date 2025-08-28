@@ -9,7 +9,13 @@ import { PlantDataService } from '@/services/plantData';
 const Home = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'date'>('name');
+  const [sortBy, setSortBy] = useState<'name' | 'date'>(() => {
+    try {
+      return (localStorage.getItem('plantSortBy') as 'name' | 'date') || 'name';
+    } catch {
+      return 'name';
+    }
+  });
   const [plants, setPlants] = useState(PlantDataService.getAllPlants());
 
   useEffect(() => {
@@ -38,7 +44,15 @@ const Home = () => {
     });
 
   const toggleSort = () => {
-    setSortBy(prev => prev === 'name' ? 'date' : 'name');
+    setSortBy(prev => {
+      const newSort = prev === 'name' ? 'date' : 'name';
+      try {
+        localStorage.setItem('plantSortBy', newSort);
+      } catch {
+        // Handle localStorage errors silently
+      }
+      return newSort;
+    });
   };
 
   return (
