@@ -221,31 +221,29 @@ const PlantDetail = () => {
             </Badge>
           </CardHeader>
           <CardContent className="pt-0 px-2 pb-2">
-            <ScrollArea className="w-full">
-              <div className="flex gap-1.5 pb-2" style={{ width: 'max-content' }}>
-                {plant.photos.map((photo, index) => (
-                  <div
-                    key={index}
-                    className={`w-16 h-16 bg-muted rounded-lg overflow-hidden cursor-pointer border-2 transition-all flex-shrink-0 ${
-                      index === plant.thumbnailIndex
-                        ? 'border-primary shadow-soft'
-                        : 'border-transparent hover:border-border/50'
-                    }`}
-                    onClick={() => openPhotoModal(index)}
-                  >
-                    <img
-                      src={photo}
-                      alt={`${plant.name} photo ${index + 1}`}
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/placeholder.svg';
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
+            <div className="grid grid-cols-3 gap-1.5">
+              {plant.photos.map((photo, index) => (
+                <div
+                  key={index}
+                  className={`aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer border-2 transition-all ${
+                    index === plant.thumbnailIndex
+                      ? 'border-primary shadow-soft'
+                      : 'border-transparent hover:border-border/50'
+                  }`}
+                  onClick={() => openPhotoModal(index)}
+                >
+                  <img
+                    src={photo}
+                    alt={`${plant.name} photo ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src = '/placeholder.svg';
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </main>

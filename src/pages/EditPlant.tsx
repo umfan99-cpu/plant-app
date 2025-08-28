@@ -102,6 +102,7 @@ const EditPlant = () => {
     notes: ''
   });
   const [photos, setPhotos] = useState<string[]>([]);
+  const [thumbnailIndex, setThumbnailIndex] = useState(0);
 
   useEffect(() => {
     if (plant) {
@@ -114,6 +115,7 @@ const EditPlant = () => {
         notes: plant.notes
       });
       setPhotos(plant.photos);
+      setThumbnailIndex(plant.thumbnailIndex);
     }
   }, [plant]);
 
@@ -174,7 +176,7 @@ const EditPlant = () => {
     }
 
     // In real app, this would save to API/database
-    console.log('Saving plant:', { ...formData, photos });
+    console.log('Saving plant:', { ...formData, photos, thumbnailIndex });
     
     toast({
       title: "Plant updated successfully!",
@@ -342,28 +344,47 @@ const EditPlant = () => {
 
               {/* Photo Preview Grid */}
               {photos.length > 0 && (
-                <div className="grid grid-cols-3 gap-2">
-                  {photos.map((photo, index) => (
-                    <div key={index} className="relative group">
-                      <div className="aspect-square bg-muted rounded-xl overflow-hidden">
-                        <img
-                          src={photo}
-                          alt={`Photo ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
+                <>
+                  <div className="mb-2">
+                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                      Select Main Photo
+                    </label>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    {photos.map((photo, index) => (
+                      <div key={index} className="relative group">
+                        <div 
+                          className={`aspect-square bg-muted rounded-xl overflow-hidden border-2 cursor-pointer transition-all ${
+                            index === thumbnailIndex 
+                              ? 'border-primary shadow-soft' 
+                              : 'border-transparent hover:border-border/50'
+                          }`}
+                          onClick={() => setThumbnailIndex(index)}
+                        >
+                          <img
+                            src={photo}
+                            alt={`Photo ${index + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-1 right-1 w-5 h-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => removePhoto(index)}
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                        {index === thumbnailIndex && (
+                          <div className="absolute bottom-1 left-1 bg-primary text-primary-foreground text-[10px] px-1.5 py-0.5 rounded-md font-medium">
+                            Main
+                          </div>
+                        )}
                       </div>
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="sm"
-                        className="absolute top-1 right-1 w-5 h-5 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => removePhoto(index)}
-                      >
-                        <X className="w-3 h-3" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>
