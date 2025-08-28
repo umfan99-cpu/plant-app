@@ -1,19 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, ArrowUpDown } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import PlantThumbnail from '@/components/PlantThumbnail';
 import { PlantDataService } from '@/services/plantData';
 
 const Home = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<'name' | 'date'>(() => {
+  const [sortBy, setSortBy] = useState<'name-asc' | 'name-desc' | 'date-desc' | 'date-asc'>(() => {
     try {
-      return (localStorage.getItem('plantSortBy') as 'name' | 'date') || 'name';
+      return (localStorage.getItem('plantSortBy') as 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc') || 'name-asc';
     } catch {
-      return 'name';
+      return 'name-asc';
     }
   });
   const [plants, setPlants] = useState(PlantDataService.getAllPlants());
@@ -50,32 +50,29 @@ const Home = () => {
       plant.scientificName.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
-      if (sortBy === 'name') {
-        return a.name.localeCompare(b.name);
-      } else {
-        // Sort by dateAcquired - most recent first
-        const dateA = new Date(a.dateAdded);
-        const dateB = new Date(b.dateAdded);
-        
-        // Debug logging
-        console.log(`Sorting: ${a.name} (${a.dateAdded}) vs ${b.name} (${b.dateAdded})`);
-        console.log(`Date objects: ${dateA} vs ${dateB}`);
-        console.log(`Result: ${dateB.getTime() - dateA.getTime()}`);
-        
-        return dateB.getTime() - dateA.getTime();
+      switch (sortBy) {
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        case 'date-desc':
+          // Most recent first
+          return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+        case 'date-asc':
+          // Oldest first
+          return new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime();
+        default:
+          return 0;
       }
     });
 
-  const toggleSort = () => {
-    setSortBy(prev => {
-      const newSort = prev === 'name' ? 'date' : 'name';
-      try {
-        localStorage.setItem('plantSortBy', newSort);
-      } catch {
-        // Handle localStorage errors silently
-      }
-      return newSort;
-    });
+  const handleSortChange = (value: 'name-asc' | 'name-desc' | 'date-desc' | 'date-asc') => {
+    setSortBy(value);
+    try {
+      localStorage.setItem('plantSortBy', value);
+    } catch {
+      // Handle localStorage errors silently
+    }
   };
 
   return (
@@ -100,16 +97,18 @@ const Home = () => {
               />
             </div>
             
-            {/* Sort Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleSort}
-              className="h-9 px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-background/60 rounded-full"
-            >
-              <ArrowUpDown className="w-4 h-4 mr-2" />
-              {sortBy === 'name' ? 'Name' : 'Date'}
-            </Button>
+            {/* Sort Dropdown */}
+            <Select value={sortBy} onValueChange={handleSortChange}>
+              <SelectTrigger className="w-[140px] h-9 bg-background/60 border-border/30 rounded-full text-sm">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent className="bg-popover border-border shadow-lg">
+                <SelectItem value="name-asc">A-Z</SelectItem>
+                <SelectItem value="name-desc">Z-A</SelectItem>
+                <SelectItem value="date-desc">New-Old</SelectItem>
+                <SelectItem value="date-asc">Old-New</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </header>
