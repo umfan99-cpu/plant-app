@@ -19,11 +19,13 @@ interface ProfileData {
 const Profile = () => {
   const [profile, setProfile] = useState<ProfileData>({ display_name: '', avatar_url: '' });
   const [loading, setLoading] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
+  const [showEmailChange, setShowEmailChange] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [themeMode, setThemeMode] = useState<'system' | 'light' | 'dark'>('system');
   
-  const { user, signOut, resetPassword } = useAuth();
+  const { user, signOut, resetPassword, updateEmail } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -83,6 +85,31 @@ const Profile = () => {
     } catch (error: any) {
       toast({
         title: "Error updating profile",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEmailUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await updateEmail(newEmail);
+      if (error) throw error;
+      
+      toast({
+        title: "Email update requested",
+        description: "Check your new email for a confirmation link to complete the change.",
+      });
+      setShowEmailChange(false);
+      setNewEmail('');
+    } catch (error: any) {
+      toast({
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -197,17 +224,62 @@ const Profile = () => {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={user.email || ''}
-                disabled
-                className="bg-muted"
-              />
-              <p className="text-sm text-muted-foreground">
-                Email cannot be changed. Contact support if needed.
-              </p>
+              <div className="flex gap-2">
+                <Input
+                  id="email"
+                  type="email"
+                  value={user.email || ''}
+                  disabled
+                  className="bg-muted flex-1"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowEmailChange(true)}
+                >
+                  Change
+                </Button>
+              </div>
+              {!showEmailChange && (
+                <p className="text-sm text-muted-foreground">
+                  Your current email address
+                </p>
+              )}
             </div>
+
+            {showEmailChange && (
+              <form onSubmit={handleEmailUpdate} className="space-y-4 p-4 border rounded-lg bg-muted/30">
+                <div className="space-y-2">
+                  <Label htmlFor="newEmail">New Email Address</Label>
+                  <Input
+                    id="newEmail"
+                    type="email"
+                    placeholder="Enter your new email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    required
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    You'll need to confirm this email address before the change takes effect.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button type="submit" disabled={loading} className="flex-1">
+                    {loading ? 'Sending...' : 'Update Email'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowEmailChange(false);
+                      setNewEmail('');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            )}
             
             <div className="space-y-2">
               <Label htmlFor="displayName">Display Name</Label>
