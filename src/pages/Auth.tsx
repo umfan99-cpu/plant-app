@@ -75,144 +75,149 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-primary flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <Leaf className="w-8 h-8 text-primary" />
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-sm">
+        {/* Logo and Title */}
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-2xl mb-6">
+            <Leaf className="w-6 h-6 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold text-primary-foreground mb-2">Plant Collection</h1>
-          <p className="text-primary-foreground/80">Grow your botanical journey</p>
+          <h1 className="text-2xl font-semibold text-foreground tracking-tight">Plant Collection</h1>
         </div>
 
-        <Card className="shadow-large border-0">
-          <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">
-              {isResetPassword ? 'Reset Password' : isLogin ? 'Welcome back' : 'Create account'}
-            </CardTitle>
-            <CardDescription className="text-center">
+        {/* Auth Form */}
+        <div className="space-y-6">
+          {/* Form Title */}
+          <div className="text-center">
+            <h2 className="text-xl font-medium text-foreground mb-2">
+              {isResetPassword ? 'Reset your password' : isLogin ? 'Welcome back' : 'Sign up'}
+            </h2>
+            <p className="text-sm text-muted-foreground">
               {isResetPassword 
                 ? 'Enter your email to receive reset instructions'
                 : isLogin 
-                ? 'Sign in to your plant collection'
-                : 'Start your plant collection journey'
+                ? 'Sign in to continue to your collection'
+                : 'Create an account to get started'
               }
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && !isResetPassword && (
-                <div className="space-y-2">
-                  <Label htmlFor="displayName">Display Name</Label>
-                  <Input
-                    id="displayName"
-                    type="text"
-                    placeholder="Your name"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    required
-                  />
-                </div>
-              )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+            </p>
+          </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {!isLogin && !isResetPassword && (
+              <div className="space-y-1">
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  id="displayName"
+                  type="text"
+                  placeholder="Display name"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
                   required
+                  className="h-12 bg-background border-border/50 focus:border-primary rounded-lg text-sm"
                 />
               </div>
-              
-              {!isResetPassword && (
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      minLength={6}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              )}
-              
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Loading...' : isResetPassword ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Sign Up'}
-              </Button>
-            </form>
-
-            {!isResetPassword && (
-              <>
-                <div className="mt-4">
-                  <Button
-                    type="button"
-                    variant="link"
-                    className="w-full text-sm text-muted-foreground"
-                    onClick={() => setIsResetPassword(true)}
-                  >
-                    Forgot your password?
-                  </Button>
-                </div>
-
-                <Separator className="my-4" />
-
-                <div className="text-center">
-                  <span className="text-sm text-muted-foreground">
-                    {isLogin ? "Don't have an account?" : "Already have an account?"}
-                  </span>
-                  <Button
-                    type="button"
-                    variant="link"
-                    className="ml-1 p-0 h-auto font-semibold"
-                    onClick={() => {
-                      setIsLogin(!isLogin);
-                      resetForm();
-                    }}
-                  >
-                    {isLogin ? 'Sign up' : 'Sign in'}
-                  </Button>
-                </div>
-              </>
             )}
+            
+            <div className="space-y-1">
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="h-12 bg-background border-border/50 focus:border-primary rounded-lg text-sm"
+              />
+            </div>
+            
+            {!isResetPassword && (
+              <div className="space-y-1 relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="h-12 bg-background border-border/50 focus:border-primary rounded-lg text-sm pr-12"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-10 w-10 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
+            )}
+            
+            <Button 
+              type="submit" 
+              className="w-full h-12 bg-primary hover:bg-primary-hover text-primary-foreground font-medium rounded-lg transition-colors" 
+              disabled={loading}
+            >
+              {loading ? 'Please wait...' : isResetPassword ? 'Send Reset Link' : isLogin ? 'Sign In' : 'Sign Up'}
+            </Button>
+          </form>
 
-            {isResetPassword && (
-              <div className="mt-4 text-center">
+          {/* Action Links */}
+          <div className="space-y-4">
+            {!isResetPassword && (
+              <div className="text-center">
                 <Button
                   type="button"
                   variant="link"
-                  className="text-sm"
+                  className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto"
+                  onClick={() => setIsResetPassword(true)}
+                >
+                  Forgot password?
+                </Button>
+              </div>
+            )}
+
+            {/* Switch between login/signup */}
+            {!isResetPassword && (
+              <div className="flex items-center justify-center gap-1 py-4 border-t border-border/30">
+                <span className="text-sm text-muted-foreground">
+                  {isLogin ? "Don't have an account?" : "Already have an account?"}
+                </span>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="text-sm font-medium text-primary p-0 h-auto hover:underline"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    resetForm();
+                  }}
+                >
+                  {isLogin ? 'Sign up' : 'Sign in'}
+                </Button>
+              </div>
+            )}
+
+            {isResetPassword && (
+              <div className="text-center pt-4">
+                <Button
+                  type="button"
+                  variant="link"
+                  className="text-sm text-muted-foreground hover:text-foreground p-0 h-auto"
                   onClick={() => {
                     setIsResetPassword(false);
                     resetForm();
                   }}
                 >
-                  Back to sign in
+                  ← Back to sign in
                 </Button>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
