@@ -21,7 +21,7 @@ const mockPlantData = {
     whereBought: 'Green Thumb Nursery',
     dateAcquired: '2024-01-15',
     notes: 'Beautiful specimen with fenestrated leaves. Growing well in bright indirect light.',
-    photos: [monsteraImg, monsteraImg, monsteraImg],
+    photos: [monsteraImg, monsteraImg, monsteraImg, monsteraImg, monsteraImg, monsteraImg],
     thumbnailIndex: 0
   },
   2: {
@@ -32,7 +32,7 @@ const mockPlantData = {
     whereBought: 'Home Depot',
     dateAcquired: '2024-02-10',
     notes: 'Low maintenance plant perfect for beginners. Tolerates low light conditions.',
-    photos: [snakePlantImg, snakePlantImg],
+    photos: [snakePlantImg, snakePlantImg, snakePlantImg, snakePlantImg, snakePlantImg, snakePlantImg],
     thumbnailIndex: 0
   },
   3: {
@@ -43,7 +43,7 @@ const mockPlantData = {
     whereBought: 'Local Plant Shop',
     dateAcquired: '2024-01-28',
     notes: 'Fast-growing trailing plant. Great for hanging baskets or shelves.',
-    photos: [pothosImg, pothosImg, pothosImg, pothosImg],
+    photos: [pothosImg, pothosImg, pothosImg, pothosImg, pothosImg, pothosImg],
     thumbnailIndex: 0
   },
   4: {
@@ -54,7 +54,7 @@ const mockPlantData = {
     whereBought: 'Botanical Garden Shop',
     dateAcquired: '2024-03-05',
     notes: 'Statement plant with large glossy leaves. Requires bright indirect light.',
-    photos: [fiddleLeafImg, fiddleLeafImg],
+    photos: [fiddleLeafImg, fiddleLeafImg, fiddleLeafImg, fiddleLeafImg, fiddleLeafImg, fiddleLeafImg],
     thumbnailIndex: 0
   },
   5: {
@@ -65,7 +65,7 @@ const mockPlantData = {
     whereBought: 'Green Thumb Nursery',
     dateAcquired: '2024-02-22',
     notes: 'Elegant flowering plant that indicates when it needs water by drooping.',
-    photos: [peaceLilyImg, peaceLilyImg, peaceLilyImg],
+    photos: [peaceLilyImg, peaceLilyImg, peaceLilyImg, peaceLilyImg, peaceLilyImg, peaceLilyImg],
     thumbnailIndex: 0
   },
   6: {
@@ -76,7 +76,7 @@ const mockPlantData = {
     whereBought: 'Plant Paradise',
     dateAcquired: '2024-01-08',
     notes: 'Classic houseplant with glossy burgundy leaves. Very resilient and forgiving.',
-    photos: [rubberPlantImg, rubberPlantImg],
+    photos: [rubberPlantImg, rubberPlantImg, rubberPlantImg, rubberPlantImg, rubberPlantImg, rubberPlantImg],
     thumbnailIndex: 0
   }
 };
@@ -126,8 +126,8 @@ const PlantDetail = () => {
 
       <main className="container mx-auto px-4 py-4 max-w-4xl">
         {/* Main Photo */}
-        <div className="mb-6">
-          <div className="aspect-square bg-muted rounded-3xl overflow-hidden shadow-medium">
+        <div className="mb-4">
+          <div className="aspect-[4/3] bg-muted rounded-2xl overflow-hidden shadow-soft">
             <img
               src={plant.photos[plant.thumbnailIndex]}
               alt={plant.name}
@@ -141,73 +141,73 @@ const PlantDetail = () => {
         </div>
 
         {/* Plant Information */}
-        <div className="grid md:grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
           {/* Basic Info */}
-          <Card className="shadow-soft border-border/20 rounded-3xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base text-card-foreground font-medium">Plant Information</CardTitle>
+          <Card className="shadow-soft border-border/20 rounded-2xl">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm text-card-foreground font-medium">Plant Info</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 pt-0">
+            <CardContent className="space-y-2 pt-0 px-3 pb-3">
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Common Name</label>
-                <p className="text-card-foreground font-medium text-sm mt-1">{plant.name}</p>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Name</label>
+                <p className="text-card-foreground text-sm mt-0.5 leading-tight">{plant.name}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Scientific Name</label>
-                <p className="text-card-foreground italic text-sm mt-1">{plant.scientificName}</p>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Scientific</label>
+                <p className="text-card-foreground italic text-sm mt-0.5 leading-tight">{plant.scientificName}</p>
               </div>
               <div>
                 <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Price</label>
-                <p className="text-card-foreground text-sm mt-1 font-medium">{plant.price}</p>
+                <p className="text-card-foreground text-sm mt-0.5 font-medium">{plant.price}</p>
               </div>
             </CardContent>
           </Card>
 
           {/* Purchase Info */}
-          <Card className="shadow-soft border-border/20 rounded-3xl">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base text-card-foreground font-medium">Purchase Details</CardTitle>
+          <Card className="shadow-soft border-border/20 rounded-2xl">
+            <CardHeader className="pb-2 px-3 pt-3">
+              <CardTitle className="text-sm text-card-foreground font-medium">Purchase</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 pt-0">
+            <CardContent className="space-y-2 pt-0 px-3 pb-3">
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Where Bought</label>
-                <p className="text-card-foreground text-sm mt-1">{plant.whereBought}</p>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Store</label>
+                <p className="text-card-foreground text-sm mt-0.5 leading-tight">{plant.whereBought}</p>
               </div>
               <div>
-                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Date Acquired</label>
-                <p className="text-card-foreground text-sm mt-1">{new Date(plant.dateAcquired).toLocaleDateString()}</p>
+                <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Date</label>
+                <p className="text-card-foreground text-sm mt-0.5">{new Date(plant.dateAcquired).toLocaleDateString()}</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Notes */}
-        <Card className="shadow-soft border-border/20 mb-6 rounded-3xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base text-card-foreground font-medium">Notes</CardTitle>
+        <Card className="shadow-soft border-border/20 mb-4 rounded-2xl">
+          <CardHeader className="pb-2 px-3 pt-3">
+            <CardTitle className="text-sm text-card-foreground font-medium">Notes</CardTitle>
           </CardHeader>
-          <CardContent className="pt-0">
+          <CardContent className="pt-0 px-3 pb-3">
             <p className="text-card-foreground leading-relaxed text-sm">{plant.notes}</p>
           </CardContent>
         </Card>
 
         {/* Photo Gallery */}
-        <Card className="shadow-soft border-border/20 rounded-3xl">
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-base text-card-foreground font-medium">Photo Gallery</CardTitle>
-            <Badge variant="secondary" className="bg-secondary/50 text-xs rounded-full">
-              {plant.photos.length} photo{plant.photos.length !== 1 ? 's' : ''}
+        <Card className="shadow-soft border-border/20 rounded-2xl">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 px-3 pt-3">
+            <CardTitle className="text-sm text-card-foreground font-medium">Photos</CardTitle>
+            <Badge variant="secondary" className="bg-secondary/50 text-xs rounded-full px-2 py-0.5">
+              {plant.photos.length}
             </Badge>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+          <CardContent className="pt-0 px-3 pb-3">
+            <div className="grid grid-cols-3 gap-2">
               {plant.photos.map((photo, index) => (
                 <div
                   key={index}
-                  className={`aspect-square bg-muted rounded-2xl overflow-hidden cursor-pointer border-2 transition-all ${
+                  className={`aspect-square bg-muted rounded-xl overflow-hidden cursor-pointer border-2 transition-all ${
                     index === plant.thumbnailIndex
-                      ? 'border-primary shadow-medium scale-105'
-                      : 'border-transparent hover:border-border/50 hover:scale-105'
+                      ? 'border-primary shadow-soft scale-[1.02]'
+                      : 'border-transparent hover:border-border/50 hover:scale-[1.02]'
                   }`}
                   onClick={() => {
                     // In real app, this would update the thumbnail index

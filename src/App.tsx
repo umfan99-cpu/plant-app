@@ -22,6 +22,7 @@ const App = () => (
           <Route path="/" element={<SplashScreen />} />
           <Route path="/home" element={<><Home /><BottomNav /></>} />
           <Route path="/plant/:id" element={<><PlantDetail /><BottomNav /></>} />
+          <Route path="/plant/:id/edit" element={<><AddPlant /><BottomNav /></>} />
           <Route path="/add-plant" element={<><AddPlant /><BottomNav /></>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
