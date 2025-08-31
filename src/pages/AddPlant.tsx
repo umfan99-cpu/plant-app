@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import { compressImageToDataURL } from '@/utils/imageCompression';
 
 const AddPlant = () => {
   const navigate = useNavigate();
@@ -26,18 +27,22 @@ const AddPlant = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files) {
-      Array.from(files).forEach(file => {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            setPhotos(prev => [...prev, event.target!.result as string]);
-          }
-        };
-        reader.readAsDataURL(file);
-      });
+      for (const file of Array.from(files)) {
+        try {
+          const compressedDataURL = await compressImageToDataURL(file);
+          setPhotos(prev => [...prev, compressedDataURL]);
+        } catch (error) {
+          console.error('Error compressing image:', error);
+          toast({
+            title: "Image compression failed",
+            description: "Unable to compress the image. Please try again.",
+            variant: "destructive"
+          });
+        }
+      }
     }
   };
 
@@ -46,16 +51,20 @@ const AddPlant = () => {
     input.type = 'file';
     input.accept = 'image/*';
     input.capture = 'environment';
-    input.onchange = (e) => {
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          if (event.target?.result) {
-            setPhotos(prev => [...prev, event.target!.result as string]);
-          }
-        };
-        reader.readAsDataURL(file);
+        try {
+          const compressedDataURL = await compressImageToDataURL(file);
+          setPhotos(prev => [...prev, compressedDataURL]);
+        } catch (error) {
+          console.error('Error compressing image:', error);
+          toast({
+            title: "Image compression failed",
+            description: "Unable to compress the image. Please try again.",
+            variant: "destructive"
+          });
+        }
       }
     };
     input.click();
