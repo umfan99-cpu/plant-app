@@ -44,10 +44,6 @@ const Auth = () => {
       } else if (isLogin) {
         const { error } = await signIn(email, password);
         if (error) throw error;
-        toast({
-          title: "Welcome back!",
-          description: "You've successfully signed in.",
-        });
       } else {
         const { error } = await signUp(email, password, displayName);
         if (error) throw error;
