@@ -200,6 +200,15 @@ const PlantDetail = () => {
         onNext={handleNextPhoto}
         plantName={currentPlant.name}
       />
+
+      {/* Floating Action Button */}
+      <Button
+        onClick={() => navigate(`/plant/${id}/edit`)}
+        className="fixed bottom-24 right-4 h-14 w-14 rounded-full bg-gradient-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+        size="icon"
+      >
+        <Camera className="w-6 h-6" />
+      </Button>
     </div>
   );
 };
