@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, Archive, Trash2, Camera, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Edit, Archive, Trash2, Camera, Image as ImageIcon, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import PhotoModal from '@/components/PhotoModal';
 import { useToast } from '@/hooks/use-toast';
 import { PlantDataService, type Plant, type Photo } from '@/services/plantData';
@@ -17,6 +18,7 @@ const PlantDetail = () => {
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [plant, setPlant] = useState<Plant | null>(null);
+  const [isPhotoOptionsOpen, setIsPhotoOptionsOpen] = useState(false);
 
   useEffect(() => {
     const plantData = PlantDataService.getPlant(parseInt(id || '1'));
@@ -69,42 +71,62 @@ const PlantDetail = () => {
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        try {
-          const compressedDataURL = await compressImageToDataURL(file);
-          const newPhoto: Photo = {
-            url: compressedDataURL,
-            dateTaken: new Date().toISOString().split('T')[0]
-          };
-          
-          const plantId = parseInt(id || '1');
-          const currentPlant = PlantDataService.getPlant(plantId);
-          if (currentPlant) {
-            const updatedPhotos = [...currentPlant.photos, newPhoto];
-            PlantDataService.updatePlant(plantId, {
-              ...currentPlant,
-              photos: updatedPhotos
-            });
-            
-            // Refresh plant data
-            const updatedPlant = PlantDataService.getPlant(plantId);
-            setPlant(updatedPlant);
-            
-            toast({
-              title: "Photo added!",
-              description: "Your new photo has been saved successfully.",
-            });
-          }
-        } catch (error) {
-          console.error('Error compressing image:', error);
-          toast({
-            title: "Upload failed",
-            description: "Unable to process the image. Please try again.",
-            variant: "destructive"
-          });
-        }
+        await processPhotoUpload(file);
       }
     };
     input.click();
+    setIsPhotoOptionsOpen(false);
+  };
+
+  const handlePhotoUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.multiple = false;
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        await processPhotoUpload(file);
+      }
+    };
+    input.click();
+    setIsPhotoOptionsOpen(false);
+  };
+
+  const processPhotoUpload = async (file: File) => {
+    try {
+      const compressedDataURL = await compressImageToDataURL(file);
+      const newPhoto: Photo = {
+        url: compressedDataURL,
+        dateTaken: new Date().toISOString().split('T')[0]
+      };
+      
+      const plantId = parseInt(id || '1');
+      const currentPlant = PlantDataService.getPlant(plantId);
+      if (currentPlant) {
+        const updatedPhotos = [...currentPlant.photos, newPhoto];
+        PlantDataService.updatePlant(plantId, {
+          ...currentPlant,
+          photos: updatedPhotos
+        });
+        
+        // Refresh plant data
+        const updatedPlant = PlantDataService.getPlant(plantId);
+        setPlant(updatedPlant);
+        
+        toast({
+          title: "Photo added!",
+          description: "Your new photo has been saved successfully.",
+        });
+      }
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      toast({
+        title: "Upload failed",
+        description: "Unable to process the image. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -250,14 +272,40 @@ const PlantDetail = () => {
         plantName={currentPlant.name}
       />
 
-      {/* Floating Action Button */}
-      <Button
-        onClick={handleCameraCapture}
-        className="fixed bottom-24 right-4 h-14 w-14 rounded-full bg-gradient-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 z-50"
-        size="icon"
-      >
-        <Camera className="w-6 h-6" />
-      </Button>
+      {/* Floating Action Button with Photo Options */}
+      <Sheet open={isPhotoOptionsOpen} onOpenChange={setIsPhotoOptionsOpen}>
+        <SheetTrigger asChild>
+          <Button
+            className="fixed bottom-24 right-4 h-14 w-14 rounded-full bg-gradient-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 z-50"
+            size="icon"
+          >
+            <Camera className="w-6 h-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="bottom" className="h-auto">
+          <SheetHeader>
+            <SheetTitle>Add Photo</SheetTitle>
+          </SheetHeader>
+          <div className="grid grid-cols-2 gap-4 mt-6 mb-6">
+            <Button
+              onClick={handleCameraCapture}
+              variant="outline"
+              className="h-20 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
+            >
+              <Camera className="w-8 h-8 text-muted-foreground" />
+              <span className="text-sm">Take Photo</span>
+            </Button>
+            <Button
+              onClick={handlePhotoUpload}
+              variant="outline"
+              className="h-20 flex-col gap-2 border-2 border-dashed hover:border-primary/50"
+            >
+              <Upload className="w-8 h-8 text-muted-foreground" />
+              <span className="text-sm">Upload Photo</span>
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
