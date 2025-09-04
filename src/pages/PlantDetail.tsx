@@ -6,11 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import PhotoModal from '@/components/PhotoModal';
-import { PlantDataService, type Plant } from '@/services/plantData';
+import { useToast } from '@/hooks/use-toast';
+import { PlantDataService, type Plant, type Photo } from '@/services/plantData';
+import { compressImageToDataURL } from '@/utils/imageCompression';
 
 const PlantDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const [plant, setPlant] = useState<Plant | null>(null);
@@ -56,6 +59,52 @@ const PlantDetail = () => {
 
   const handleNextPhoto = () => {
     setCurrentPhotoIndex(prev => prev === currentPlant.photos.length - 1 ? 0 : prev + 1);
+  };
+
+  const handleCameraCapture = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.capture = 'environment';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        try {
+          const compressedDataURL = await compressImageToDataURL(file);
+          const newPhoto: Photo = {
+            url: compressedDataURL,
+            dateTaken: new Date().toISOString().split('T')[0]
+          };
+          
+          const plantId = parseInt(id || '1');
+          const currentPlant = PlantDataService.getPlant(plantId);
+          if (currentPlant) {
+            const updatedPhotos = [...currentPlant.photos, newPhoto];
+            PlantDataService.updatePlant(plantId, {
+              ...currentPlant,
+              photos: updatedPhotos
+            });
+            
+            // Refresh plant data
+            const updatedPlant = PlantDataService.getPlant(plantId);
+            setPlant(updatedPlant);
+            
+            toast({
+              title: "Photo added!",
+              description: "Your new photo has been saved successfully.",
+            });
+          }
+        } catch (error) {
+          console.error('Error compressing image:', error);
+          toast({
+            title: "Upload failed",
+            description: "Unable to process the image. Please try again.",
+            variant: "destructive"
+          });
+        }
+      }
+    };
+    input.click();
   };
 
   return (
@@ -203,7 +252,7 @@ const PlantDetail = () => {
 
       {/* Floating Action Button */}
       <Button
-        onClick={() => navigate(`/plant/${id}/edit`)}
+        onClick={handleCameraCapture}
         className="fixed bottom-24 right-4 h-14 w-14 rounded-full bg-gradient-primary hover:bg-primary-hover text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 z-50"
         size="icon"
       >
